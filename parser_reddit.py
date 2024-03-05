@@ -87,6 +87,7 @@ def search_reddit_for_dog_food(size, breed):
             for variation in variations:
                 if variation.lower() in text.lower():
                     brand_mentions[brand] += 1
+
     
     # Search through titles and comments for brand mentions
     for submission in search_results:
@@ -97,20 +98,16 @@ def search_reddit_for_dog_food(size, breed):
         submission.comments.replace_more(limit=0)  # This line removes the "MoreComments" instances
         for comment in submission.comments.list():
             search_text_for_brands(comment.body, brand_mentions)
-
     sorted_brand_mentions = sorted(brand_mentions.items(), key=lambda x: x[1], reverse=True)
+    return sorted_brand_mentions
     
+    
+def getList(list):
     # Print the brands mentioned and their occurrence times
-    if sorted_brand_mentions:
+    if list:
         print("Brand mentions based on your search:")
-        for brand, count in sorted_brand_mentions:
+        for brand, count in list:
             print(f"{brand}: {count} times")
     else:
         print("No specific dog food brands mentioned in the search results.")
 
-if __name__ == "__main__":
-    prompt = "What's the best food for my dog?"
-    print(prompt)
-    size = input("Enter your dog's size (small, medium, large): ").lower()
-    breed = input("Enter your dog's breed: ").lower()
-    search_reddit_for_dog_food(size, breed)
