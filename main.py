@@ -9,7 +9,7 @@ def main():
     getList(brand_mentions, brand_sentiments) #if you want to print output of reddit parsing results
     '''for brand in list in range(5):   #Uncomment to run
         runUrScript(brand)
-        print(f"Top {list.index(brand)} - {brand} average price per kg: {urscripts Aleks + Santiago}, what people say about this brand: {ur script Aidan}")'''
+        print(f"Top {list.index(brand)} - {brand} average price per kg: {urscripts Aleks + Santiago}, where to find the food near by: {ur script Aidan}")'''
 
 
 #TODO let me know if you agree to this structure, do you think that 2 people on price is okay?
