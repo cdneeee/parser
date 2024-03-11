@@ -1,10 +1,13 @@
 import praw
 import collections as c
+from nltk.sentiment import SentimentIntensityAnalyzer
+import datetime as dt
 
 # Reddit API credentials
 CLIENT_ID = 'YMND4Oi51pWAgEWQX6oi3A'
 SECRET_KEY = '14JDmPPP0BtYeBssmKYyIgBzmIBmsw'
 USER_AGENT = 'Ill_Huckleberry9931'
+sia = SentimentIntensityAnalyzer()
 
 
 # Initialize Reddit client
@@ -12,40 +15,7 @@ reddit = praw.Reddit(client_id = CLIENT_ID,
                      client_secret = SECRET_KEY,
                      user_agent = USER_AGENT)
 
-'''def search_reddit_for_dog_food(size, breed):
-    # Formulate the search query based on the dog's size and breed
-    search_query = f"best food for {size} {breed} dog"
-    
-    # Search Reddit for the query
-    search_results = reddit.subreddit('dogs').search(search_query, limit=10)
-    
-    # Collect results in a list
-    results_list = []
-    for submission in search_results:
-        results_list.append({
-            "title": submission.title,
-            "url": submission.url,
-            "score": submission.score,
-            "subreddit": str(submission.subreddit)
-        })
-    
-    # Sort the list by score in descending order
-    sorted_results = sorted(results_list, key=lambda x: x['score'], reverse=True)
-    
-    # Print the sorted results
-    for result in sorted_results:
-        print(f"Title: {result['title']}")
-        print(f"URL: {result['url']}")
-        print(f"Score: {result['score']}")
-        print(f"Subreddit: {result['subreddit']}")
-        print("--------------------------------------------------")
 
-if __name__ == "__main__":
-    prompt = "What's the best food for my dog?"
-    print(prompt)
-    size = input("Enter your dog's size (small, medium, large): ").lower()
-    breed = input("Enter your dog's breed: ").lower()
-    search_reddit_for_dog_food(size, breed)'''
 
 dog_food_brands = {
     'Purina': ['Purina', 'Purinna', 'Purena', 'Purinia', 'Purna', 'Pur'],
@@ -72,42 +42,66 @@ dog_food_brands = {
     'Stella & Chewy\'s': ['Stella & Chewy\'s', 'Stela & Chewy', 'Stella and Chewys', 'Stella & Chewis', 'S&C', 'Stella Chewy']
     }
 # Initialize Reddit client
-def search_reddit_for_dog_food(size, breed):
+def search_reddit_for_dog_food(size, breed, start_date="2023-01-01", end_date="2024-03-01"):
+    start_timestamp = int(dt.datetime.strptime(start_date, "%Y-%m-%d").timestamp())
+    end_timestamp = int(dt.datetime.strptime(end_date, "%Y-%m-%d").timestamp())
     # Formulate the search query based on the dog's size and breed
     search_query = f"best food for {size} {breed} dog"
     
     # Search Reddit for the query
-    search_results = reddit.subreddit('dogs').search(search_query, limit=100)
+    search_results = reddit.subreddit('dogs').search(search_query, syntax='cloudsearch', time_filter='all', limit=100)
     
     # Initialize a counter for occurrences
     brand_mentions = c.Counter()
+    brand_sentiments = c.defaultdict(list)
     
-    def search_text_for_brands(text, brand_mentions):
+    def search_text_for_brands(text, brand_mentions, brand_sentiments):
         for brand, variations in dog_food_brands.items():
             for variation in variations:
                 if variation.lower() in text.lower():
                     brand_mentions[brand] += 1
+                    sentiment_score = sia.polarity_scores(text)
+                    brand_sentiments[brand].append(sentiment_score['compound'])  # Compound score for overall sentiment
 
     
     # Search through titles and comments for brand mentions
     for submission in search_results:
-        # Search in title
-        search_text_for_brands(submission.title, brand_mentions)
-        
-        # heavy part cause searching through comments
-        submission.comments.replace_more(limit=0)  # This line removes the "MoreComments" instances
-        for comment in submission.comments.list():
-            search_text_for_brands(comment.body, brand_mentions)
+        # Check if submission falls within the desired timeframe
+        if start_timestamp <= submission.created_utc:
+            # Search in title
+            search_text_for_brands(submission.title, brand_mentions, brand_sentiments)
+            
+            # heavy part cause searching through comments
+            submission.comments.replace_more(limit=0)  # This line removes the "MoreComments" instances
+            for comment in submission.comments.list():
+                search_text_for_brands(comment.body, brand_mentions, brand_sentiments)
+
+    for brand in brand_sentiments:
+        brand_sentiments[brand] = sum(brand_sentiments[brand]) / len(brand_sentiments[brand]) if brand_sentiments[brand] else 0
+    
     sorted_brand_mentions = sorted(brand_mentions.items(), key=lambda x: x[1], reverse=True)
-    return sorted_brand_mentions
+    return sorted_brand_mentions, brand_sentiments
+
+def categorize_sentiment(score):
+    if 0.5 < score < 0.6:
+        return "good"
+    elif score < 0.2:
+        return "better not"
+    elif score > 0.6:
+        return "excellent"
+    else:
+        return "decent"
+
     
-    
-def getList(list):
-    # Print the brands mentioned and their occurrence times
-    if list:
-        print("Brand mentions based on your search:")
-        for brand, count in list:
-            print(f"{brand}: {count} times")
+
+def getList(brand_mentions, brand_sentiments):
+    # Print the brands mentioned and their occurrence times along with average sentiment
+    if brand_mentions:
+        print("Brand mentions and sentiments based on your search:")
+        for brand, count in brand_mentions:
+            # Fetch the average sentiment score for the brand, defaulting to 0 if not found
+            sentiment_score = brand_sentiments.get(brand, 0)
+            sentiment_description = categorize_sentiment(sentiment_score)
+            print(f"{brand}: {count} times || Average Sentiment: {sentiment_description}")
     else:
         print("No specific dog food brands mentioned in the search results.")
-
