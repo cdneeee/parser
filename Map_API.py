@@ -3,9 +3,7 @@ import requests
 #Default is London, Ontario Coords
 latiude=42.9849
 longitude=-81.2453
-#asking user if they want to go a different place
-latiude=input("What is your latiude: ")
-longitude=input("Now, what is your longitude: ")
+#testing commit
 url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=dog&location="+str(latiude)+"%2C"+str(longitude)+"&radius=5000&type=pet_store&key=AIzaSyBr5bs5yA1VqS4DTxckkybYVBuTTiDtQII"
 
 
@@ -17,7 +15,6 @@ headers = {
 
 response = requests.get(url, headers=headers)
 
-#print(response.json())
 responseItems=response.json()
 
 rankedPetStores =dict()
