@@ -1,4 +1,4 @@
-from parser_reddit import search_reddit_for_dog_food, getList
+from parser_reddit import search_reddit_for_dog_food, getList, find_brand_name
 def main():
     prompt = "What's the best food for my dog?"
     print(prompt)
@@ -7,9 +7,23 @@ def main():
    # search_reddit_for_dog_food(size, breed)
     brand_mentions, brand_sentiments = search_reddit_for_dog_food(size, breed)
     getList(brand_mentions, brand_sentiments) #if you want to print output of reddit parsing results
-    '''for brand in list in range(5):   #Uncomment to run
-        runUrScript(brand)
-        print(f"Top {list.index(brand)} - {brand} average price per kg: {urscripts Aleks + Santiago}, where to find the food near by: {ur script Aidan}")'''
+    search = True
+    while(search):
+        chosen_brand = input("Choose one brand to find the price of by typing it's full or short name: ").lower()
+        matched_brand = find_brand_name(chosen_brand)
+        if matched_brand:
+            #Run amazon and ebay code
+
+            continue
+        else:
+            print("Sorry, we couldn't find a match for that brand.")
+        prompt1 = "Do you want to search for a different brand?"
+        print(prompt1)
+        answ = input("Y for Yes || N for No")
+        if answ.lower() == 'n':
+            #Run Map code
+            search = False
+
 
 
 #TODO let me know if you agree to this structure, do you think that 2 people on price is okay?

@@ -98,10 +98,21 @@ def getList(brand_mentions, brand_sentiments):
     # Print the brands mentioned and their occurrence times along with average sentiment
     if brand_mentions:
         print("Brand mentions and sentiments based on your search:")
-        for brand, count in brand_mentions:
+        for brand, count in brand_mentions :
             # Fetch the average sentiment score for the brand, defaulting to 0 if not found
             sentiment_score = brand_sentiments.get(brand, 0)
             sentiment_description = categorize_sentiment(sentiment_score)
             print(f"{brand}: {count} times || Average Sentiment: {sentiment_description}")
     else:
         print("No specific dog food brands mentioned in the search results.")
+
+
+def find_brand_name(user_input, brands_dict=None):
+    # Iterate through each brand and its variations
+    if brands_dict is None:
+        brands_dict = dog_food_brands
+        for brand, variations in brands_dict.items():
+            # Check if the user input matches any of the variations (case-insensitive)
+            if user_input in [variation.lower() for variation in variations]:
+                return brand  # Return the main brand name if a match is found
+        return None
