@@ -41,7 +41,7 @@ dog_food_brands = {
     'Nutrish': ['Nutrish', 'Nutrishh', 'Nurtrish', 'Nutrsh', 'Rachael Ray Nutrish', 'RRN'],
     'Stella & Chewy\'s': ['Stella & Chewy\'s', 'Stela & Chewy', 'Stella and Chewys', 'Stella & Chewis', 'S&C', 'Stella Chewy']
     }
-# Initialize Reddit client
+
 def search_reddit_for_dog_food(size, breed, start_date="2023-01-01", end_date="2024-03-01"):
     start_timestamp = int(dt.datetime.strptime(start_date, "%Y-%m-%d").timestamp())
     end_timestamp = int(dt.datetime.strptime(end_date, "%Y-%m-%d").timestamp())
