@@ -1,6 +1,7 @@
 #import requests
 #import json
 
+# finding product name (title), price, cost of shipping (shippingCost), link and sometimes (if it works) cost per kg
 ''' commented out because I have used 80%  + of my free credits
 
 # set up the request parameters
@@ -23,7 +24,7 @@ api_result = requests.get('https://api.countdownapi.com/request', params)
 # print the JSON response from Countdown API
 #print(json.dumps(api_result.json()))
 
-# need to find average price of brand and cost per kg
+
 
 
 
