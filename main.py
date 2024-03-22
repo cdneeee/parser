@@ -1,4 +1,5 @@
 from parser_reddit import search_reddit_for_dog_food, getList, find_brand_name
+from Map_API import rankedPetStores,mainSort,recomendedStore
 def main():
     prompt = "What's the best food for my dog?"
     print(prompt)
@@ -21,7 +22,8 @@ def main():
         print(prompt1)
         answ = input("Y for Yes || N for No")
         if answ.lower() == 'n':
-            #Run Map code
+            mainSort(rankedPetStores)
+            recomendedStore(rankedPetStores)
             search = False
 
 
