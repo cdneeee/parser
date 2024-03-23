@@ -1,5 +1,6 @@
 from parser_reddit import search_reddit_for_dog_food, getList, find_brand_name
 from Map_API import rankedPetStores,mainSort,recomendedStore
+from EBAY_API import ebay_analyze
 def main():
     prompt = "What's the best food for my dog?"
     print(prompt)
@@ -13,6 +14,7 @@ def main():
         chosen_brand = input("Choose one brand to find the price of by typing it's full or short name: ").lower()
         matched_brand = find_brand_name(chosen_brand)
         if matched_brand:
+            ebay_analyze(matched_brand)
             #Run amazon and ebay code
 
             continue
