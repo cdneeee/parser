@@ -1,6 +1,7 @@
 from parser_reddit import search_reddit_for_dog_food, getList, find_brand_name
 from Map_API import rankedPetStores,mainSort,recomendedStore
 from EBAY_API import ebay_analyze
+from amazon_pricing import amazon_pricing, matched_brand
 def main():
     prompt = "What's the best food for my dog?"
     print(prompt)
@@ -15,9 +16,8 @@ def main():
         matched_brand = find_brand_name(chosen_brand)
         if matched_brand:
             ebay_analyze(matched_brand)
-            #Run amazon and ebay code
-
-            continue
+            analyzer = amazon_pricing()
+            analyzer.amazonOutput(matched_brand)
         else:
             print("Sorry, we couldn't find a match for that brand.")
         prompt1 = "Do you want to search for a different brand?"
@@ -27,19 +27,6 @@ def main():
             mainSort(rankedPetStores)
             recomendedStore(rankedPetStores)
             search = False
-
-
-
-#TODO let me know if you agree to this structure, do you think that 2 people on price is okay?
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
    main()

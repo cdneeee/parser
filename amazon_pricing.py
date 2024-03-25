@@ -44,8 +44,7 @@ class amazon_pricing:
                 return float(word)
         return 0.0
 
-    def amazonOutput(self):
-        brand = input("Enter the brand of dog food: ").strip().lower()
+    def amazonOutput(self, brand):
         prices, weights = self.amazonSearch(brand)
         if not prices or not weights:
             print("No valid prices or weights found.")
@@ -55,7 +54,3 @@ class amazon_pricing:
         print(f"Top 5 best value for {brand} dog food by price/kg:")
         for i, (price_per_kg, price, weight) in enumerate(sorted_results[:5], start=1):
             print(f"{i} - ${price_per_kg:.2f}/kg (${price:.2f} for {weight:.2f} kg)")
-
-if __name__ == "__main__":
-    analyzer = amazon_pricing()
-    analyzer.amazonOutput()
