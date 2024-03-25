@@ -47,7 +47,7 @@ def ebay_analyze (brandName):
     
     #if the search finds nothing
     if search == -1:
-      print('This dog food was not found in the search')
+      print('This dog food was not found in the Ebay search')
       found = 0
 
     #if the search finds something
