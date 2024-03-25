@@ -6,7 +6,7 @@ import json
 def ebay_analyze (brandName):
 # set up the request parameters
   params = {
-    'api_key': 'FD3E858FE6B8404EA7920B6F99093FB8',
+    'api_key': '3CA34383175B43CAB7D5129690F69704',
       'ebay_domain': 'ebay.ca',
       'search_term': 'dog food',
       'type': 'search',
