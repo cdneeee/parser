@@ -3,17 +3,15 @@ import json
 
 # finding product name (title), price, cost of shipping (shippingCost), link and sometimes (if it works) cost per kg
 
-
-
 def ebay_analyze (brandName):
 # set up the request parameters
   params = {
-    'api_key': 'C4B451BB5849470D930600A61640AE26',
+    'api_key': 'FD3E858FE6B8404EA7920B6F99093FB8',
       'ebay_domain': 'ebay.ca',
       'search_term': 'dog food',
       'type': 'search',
       'authorized_sellers': 'false',
-      'max_page': '5',
+      'max_page': '2',
       'sort_by': 'best_match',
       'output': 'json',
       'customer_location': 'ca'
@@ -39,6 +37,9 @@ def ebay_analyze (brandName):
   #to amend the search criteria for each go 
   lowerBoundForSearch = 0
   searchNumber = 1
+  
+  search = 1
+  
   while(search != -1):
     #searching the response to find searched dog food
     search = responseStringLower.find(productRequest, lowerBoundForSearch)
@@ -47,9 +48,11 @@ def ebay_analyze (brandName):
     #if the search finds nothing
     if search == -1:
       print('This dog food was not found in the search')
+      found = 0
 
     #if the search finds something
     else: 
+      found = 1
       #finding the whole title of the dog food
       titlePos = responseString.find('"title": ', search - 40) + 10 
       endTitle = responseString.find('", "epid": ', search)
@@ -60,16 +63,28 @@ def ebay_analyze (brandName):
       price = responseString[moneyPos + 1: responseString.find('"}], "price": ', search)] 
       price = float(price)
       
-      TitlesAndCosts.update(title, price)
+      TitlesAndCosts.update({title: price})
       
       #finding the link
       linkPos = responseString.find('https', search)
       link = responseString[linkPos : responseString.find('", "image": ', search)]
       
       #finding the shipping cost
-      shippingPos = responseString.find('"shipping_cost": ')
-      shippingCost = responseString[shippingPos + 17 : responseString.find(', "sponsored": ', search)]
-      shippingCost = float(shippingCost)
+      shippingPos = responseString.find('"shipping_cost": ', search)
+      #sponsored = responseString.find(', "sponsored": ', search)
+      #rating = responseString.find(', "rating": ', search)
+      
+      #next = min(sponsored, rating)
+      
+      shippingCost = responseString[shippingPos + 15 : shippingPos + 22]
+      print(shippingCost)
+      def weightFromTitle(self, shippingCost):
+        words = title.split()
+        for word in words:
+            if word.isdigit():
+                return float(word)
+        return 0.0
+      
       
       #the total cost to the customer is the sum of the shown price and the shipping fees
       totalCost = round(price + shippingCost, 2)
@@ -154,6 +169,7 @@ def ebay_analyze (brandName):
         weightNumber = float(weightString)
 
       except ValueError:
+        weightNumber = -1
         pricePerKG = -1
         print("No weight could be read")
       
@@ -198,24 +214,28 @@ def ebay_analyze (brandName):
         #if theres is a mention of can, the weight reading system doesn't work (would probably need to import chat gpt)
         else: 
           pricePerKG = -1 
+          weightNumber = -1
           print('weight could not be read')
       
       TitlesAndCostsPerKG.update({title : pricePerKG})
-      TitlesAndWeights.update({title, weightNumber})
+      TitlesAndWeights.update({title: weightNumber})
   
   #sorting title and costs dictionary 
   sortedTitlesAndCostsPerKG = sorted(TitlesAndCostsPerKG.items(), key=lambda x:x[1])
   SortedCosts = dict(sortedTitlesAndCostsPerKG)     
   
   #printing results
-  print("Top 5 best value for %s dog food by price/kg", brandName)
+  if(found = 1):
+    print("Top 5 best value for "+brandName+" dog food by price/kg")
   for i in SortedCosts: 
     n = 1
     if (SortedCosts.values[i] != -1 and TitlesAndCosts != -1):
       print("%d - $%4.2f/kg (%4.2f for %4.2f kg)", n, SortedCosts.values[i], TitlesAndCosts.get(SortedCosts.keys[i]), TitlesAndWeights.get(SortedCosts.keys[i]))
       n = n + 1
-  
-     
+ 
+ 
+brandName = 'purina'  
+ebay_analyze(brandName) 
   
  
   
