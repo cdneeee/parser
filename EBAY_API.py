@@ -225,17 +225,13 @@ def ebay_analyze (brandName):
   SortedCosts = dict(sortedTitlesAndCostsPerKG)     
   
   #printing results
-  if(found = 1):
+  if(found == 1):
     print("Top 5 best value for "+brandName+" dog food by price/kg")
   for i in SortedCosts: 
     n = 1
     if (SortedCosts.values[i] != -1 and TitlesAndCosts != -1):
       print("%d - $%4.2f/kg (%4.2f for %4.2f kg)", n, SortedCosts.values[i], TitlesAndCosts.get(SortedCosts.keys[i]), TitlesAndWeights.get(SortedCosts.keys[i]))
       n = n + 1
- 
- 
-brandName = 'purina'  
-ebay_analyze(brandName) 
   
  
   

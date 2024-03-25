@@ -1,7 +1,7 @@
 from parser_reddit import search_reddit_for_dog_food, getList, find_brand_name
 from Map_API import rankedPetStores,mainSort,recomendedStore
 from EBAY_API import ebay_analyze
-from amazon_pricing import amazon_pricing, matched_brand
+from amazon_pricing import amazon_pricing
 def main():
     prompt = "What's the best food for my dog?"
     print(prompt)
