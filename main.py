@@ -12,7 +12,7 @@ def main():
     getList(brand_mentions, brand_sentiments) #if you want to print output of reddit parsing results
     search = True
     while(search):
-        chosen_brand = input("Choose one brand to find the price of by typing it's full or short name: ").lower()
+        chosen_brand = input("\nChoose one brand to find the price of by typing it's full or short name: \n").lower()
         matched_brand = find_brand_name(chosen_brand)
         if matched_brand:
             ebay_analyze(matched_brand)
@@ -20,9 +20,9 @@ def main():
             analyzer.amazonOutput(matched_brand)
         else:
             print("Sorry, we couldn't find a match for that brand.")
-        prompt1 = "Do you want to search for a different brand?"
+        prompt1 = "\nDo you want to search for a different brand?"
         print(prompt1)
-        answ = input("Y for Yes || N for No")
+        answ = input("Y for Yes || N for No: ")
         if answ.lower() == 'n':
             mainSort(rankedPetStores)
             recomendedStore(rankedPetStores)
